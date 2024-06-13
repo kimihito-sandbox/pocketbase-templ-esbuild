@@ -1,6 +1,6 @@
 package templates
 
-templ Home() {
+templ Home(csrf string) {
 	<html>
 		<head>
 			<link rel="stylesheet" href="/assets/dist/app.css"/>
@@ -9,7 +9,7 @@ templ Home() {
 		</head>
 		<body>
 			<div class="bg-red-900">Hello World</div>
-			@Form()
+			@Form(csrf)
 		</body>
 	</html>
 }

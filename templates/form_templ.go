@@ -10,11 +10,17 @@ import "context"
 import "io"
 import "bytes"
 
-type csrfKey string
+import "encoding/json"
 
-var CSRFKey = csrfKey("X-CSRF-Token")
+func hxHeaders(csrf string) string {
+	headers := map[string]string{
+		"X-CSRF-Token": csrf,
+	}
+	bytes, _ := json.Marshal(headers)
+	return string(bytes)
+}
 
-func Form() templ.Component {
+func Form(csrf string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -27,7 +33,20 @@ func Form() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1>CSRF Example</h1><form method=\"post\" hx-post=\"/hello\"><div>If you inspect the HTML form, you will see a hidden field with the value:</div><input type=\"submit\" value=\"Submit with CSRF token\"></form>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1>CSRF Example</h1><form method=\"post\" hx-post=\"/hello\" hx-headers=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(hxHeaders(csrf))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form.templ`, Line: 15, Col: 69}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div>If you inspect the HTML form, you will see a hidden field with the value:</div><input type=\"submit\" value=\"Submit with CSRF token\"></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

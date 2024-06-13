@@ -1,12 +1,18 @@
 package templates
 
-type csrfKey string
+import "encoding/json"
 
-var CSRFKey = csrfKey("X-CSRF-Token")
+func hxHeaders(csrf string) string {
+  headers := map[string]string{
+    "X-CSRF-Token": csrf,
+  }
+  bytes, _ := json.Marshal(headers)
+  return string(bytes)
+}
 
-templ Form() {
+templ Form(csrf string) {
 		<h1>CSRF Example</h1>
-    <form method="post" hx-post="/hello">
+    <form method="post" hx-post="/hello" hx-headers={ hxHeaders(csrf) }>
       <div>
         If you inspect the HTML form, you will see a hidden field with the value:
       </div>

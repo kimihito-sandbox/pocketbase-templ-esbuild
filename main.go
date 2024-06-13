@@ -34,7 +34,12 @@ var (
 )
 
 func homeHandler(c echo.Context) error {
-	return Render(c, http.StatusOK, templates.Home())
+	cookie, err := c.Cookie("_csrf")
+	if err != nil {
+		return err
+	}
+
+	return Render(c, http.StatusOK, templates.Home(cookie.Value))
 }
 
 func createHomeHandler(c echo.Context) error {
@@ -48,6 +53,7 @@ func main() {
 		e.Router.Pre(middleware.RemoveTrailingSlash())
 		e.Router.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 			CookiePath: "/",
+			CookieHTTPOnly: true,
 		}))
 
 		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false))
