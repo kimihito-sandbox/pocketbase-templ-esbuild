@@ -10,7 +10,11 @@ import "context"
 import "io"
 import "bytes"
 
-func Home() templ.Component {
+type csrfKey string
+
+var CSRFKey = csrfKey("X-CSRF-Token")
+
+func Form() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -23,15 +27,7 @@ func Home() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html><head><link rel=\"stylesheet\" href=\"/assets/dist/app.css\"><script src=\"/assets/dist/app.js\"></script><title>Home</title></head><body><div class=\"bg-red-900\">Hello World</div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = Form().Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1>CSRF Example</h1><form method=\"post\" hx-post=\"/hello\"><div>If you inspect the HTML form, you will see a hidden field with the value:</div><input type=\"submit\" value=\"Submit with CSRF token\"></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

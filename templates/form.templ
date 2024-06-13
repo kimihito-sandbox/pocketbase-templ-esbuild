@@ -1,0 +1,15 @@
+package templates
+
+type csrfKey string
+
+var CSRFKey = csrfKey("X-CSRF-Token")
+
+templ Form() {
+		<h1>CSRF Example</h1>
+    <form method="post" hx-post="/hello">
+      <div>
+        If you inspect the HTML form, you will see a hidden field with the value:
+      </div>
+      <input type="submit" value="Submit with CSRF token"/>
+    </form>
+}

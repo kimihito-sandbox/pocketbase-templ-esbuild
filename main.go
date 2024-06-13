@@ -37,15 +37,23 @@ func homeHandler(c echo.Context) error {
 	return Render(c, http.StatusOK, templates.Home())
 }
 
+func createHomeHandler(c echo.Context) error {
+	return c.JSON(http.StatusOK, "Hello, World!")
+}
+
 func main() {
 	app := pocketbase.New()
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		e.Router.Pre(middleware.RemoveTrailingSlash())
+		e.Router.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
+			CookiePath: "/",
+		}))
 
 		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false))
 		e.Router.GET("/assets/*", apis.StaticDirectoryHandler(distDirFS, false))
 		e.Router.GET("/hello", homeHandler)
+		e.Router.POST("/hello", createHomeHandler)
 		e.Router.GET("/hello/:name", func(c echo.Context) error {
 			name := c.PathParam("name")
 			return c.JSON(http.StatusOK, "Hello, "+name+"!")
