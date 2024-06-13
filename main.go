@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/a-h/templ"
+	"github.com/kimihito-sandbox/pocketbase-templ-esbuild/templates"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -24,7 +25,7 @@ func Render(ctx echo.Context, statusCode int, t templ.Component) error {
 	return ctx.HTML(statusCode, buf.String())
 }
 
-//go:embed assets/*
+//go:embed assets/dist/*
 var embededAssets embed.FS
 
 func main() {
@@ -34,7 +35,7 @@ func main() {
 	e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false))
 	e.Router.GET("/assets/*", apis.StaticDirectoryHandler(echo.MustSubFS(embededAssets, "assets"), false))
 	e.Router.GET("/home", func(c echo.Context) error {
-		return Render(c, http.StatusOK, Home())
+		return Render(c, http.StatusOK, templates.Home())
 	})
 	e.Router.GET("/hello/:name", func(c echo.Context) error {
 		name := c.PathParam("name")
